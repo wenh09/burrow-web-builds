@@ -1,0 +1,14 @@
+{
+  "game.wasm": {
+    "file": "../../astra-engine/game.wasm.f7b3894102c3.bin",
+    "mime": "application/wasm",
+    "size": 39513091,
+    "download_bytes": 10054500
+  },
+  "game.pck": {
+    "file": "game.pck.bd23e93c3c0f.bin",
+    "mime": "application/octet-stream",
+    "size": 6172048,
+    "download_bytes": 5221196
+  }
+}
