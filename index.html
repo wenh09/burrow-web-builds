@@ -2,58 +2,245 @@
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
-<title>陋居 Web 版本索引</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>陋居 · Godot Web 版本索引</title>
 <style>
-  body { font: 15px/1.7 -apple-system, sans-serif; max-width: 760px; margin: 40px auto; padding: 0 20px; }
-  h1 { font-size: 20px; }
-  ul { padding-left: 20px; }
-  li { margin-bottom: 14px; }
-  a { font-weight: 600; }
-  .meta { color: #666; font-size: 13px; }
-  code { background: #f2f2f2; padding: 1px 5px; }
+  :root {
+    --bg: #14110f;
+    --panel: #1e1a17;
+    --panel-hi: #262119;
+    --line: #322b24;
+    --ink: #ece6dd;
+    --ink-dim: #a49a8d;
+    --ink-faint: #7d7367;
+    --accent: #d98f4a;
+    --accent-soft: #8fa87b;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 15px/1.75 -apple-system, BlinkMacSystemFont, "PingFang SC",
+          "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 56px 24px 72px; }
+
+  header { border-bottom: 1px solid var(--line); padding-bottom: 28px; margin-bottom: 36px; }
+  .eyebrow {
+    font-size: 12px; letter-spacing: .18em; text-transform: uppercase;
+    color: var(--accent); margin: 0 0 10px;
+  }
+  h1 { font-size: 30px; line-height: 1.25; margin: 0 0 14px; font-weight: 650; }
+  .lede { color: var(--ink-dim); margin: 0; max-width: 62ch; }
+  .lede code {
+    background: var(--panel-hi); color: var(--ink);
+    padding: 1px 6px; border-radius: 3px; font-size: 13px;
+  }
+
+  .keys {
+    display: flex; flex-wrap: wrap; gap: 8px 18px;
+    margin: 22px 0 0; padding: 14px 16px;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+    font-size: 13px; color: var(--ink-dim);
+  }
+  .keys b {
+    color: var(--ink); font-weight: 600;
+    background: var(--panel-hi); border: 1px solid var(--line);
+    border-radius: 4px; padding: 1px 7px; margin-right: 5px;
+    font-size: 12px;
+  }
+
+  h2 {
+    font-size: 15px; font-weight: 650; letter-spacing: .04em;
+    margin: 44px 0 6px; padding-bottom: 0;
+  }
+  h2 .n { color: var(--ink-faint); font-weight: 400; margin-left: 8px; font-size: 13px; }
+  .sec-note { color: var(--ink-faint); font-size: 13px; margin: 0 0 20px; max-width: 66ch; }
+
+  .grid {
+    display: grid; gap: 18px;
+    grid-template-columns: repeat(auto-fill, minmax(268px, 1fr));
+    margin: 0; padding: 0; list-style: none;
+  }
+  .card {
+    display: block; text-decoration: none; color: inherit;
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 10px; overflow: hidden;
+    transition: border-color .16s, transform .16s;
+  }
+  .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .shot {
+    display: block; width: 100%; aspect-ratio: 16 / 10;
+    object-fit: cover; background: var(--panel-hi);
+    border-bottom: 1px solid var(--line);
+  }
+  .body { padding: 13px 15px 15px; }
+  .idx { color: var(--accent); font-weight: 650; font-size: 13px; margin-right: 6px; }
+  .name { font-weight: 600; font-size: 14px; }
+  .desc { color: var(--ink-dim); font-size: 13px; line-height: 1.6; margin: 7px 0 0; }
+  .desc .id {
+    font-size: 12px; color: var(--ink-faint);
+    overflow-wrap: anywhere;
+  }
+  .tags { margin: 10px 0 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    font-size: 11px; color: var(--ink-faint);
+    border: 1px solid var(--line); border-radius: 4px; padding: 1px 7px;
+  }
+  .tag.hot { color: var(--accent-soft); border-color: #3d4636; }
+
+  footer {
+    margin-top: 52px; padding-top: 22px;
+    border-top: 1px solid var(--line);
+    color: var(--ink-faint); font-size: 13px;
+  }
+  footer p { margin: 0 0 8px; max-width: 72ch; }
+  footer a { color: var(--accent-soft); }
+
+  @media (max-width: 560px) {
+    .wrap { padding: 36px 16px 52px; }
+    h1 { font-size: 24px; }
+    /* 268px minimum plus padding overflows a 375-414px viewport. */
+    .grid { grid-template-columns: 1fr; gap: 14px; }
+  }
 </style>
 </head>
 <body>
-<h1>陋居 Web 版本索引</h1>
-<p>Godot 4.7.1 Web 导出，单线程 <code>gl_compatibility</code>。必须经 HTTP 打开，直接双击 <code>index.html</code> 会因 <code>file://</code> 被浏览器拦住。</p>
-<p class="meta">操作：WASD 移动，鼠标观察，Space 跳跃，靠近前门按 E 开门，Esc 释放鼠标。首次点击画面才会捕获鼠标。</p>
+<div class="wrap">
 
-<h2>表现版本</h2>
-<ul>
-<li><a href="01-paper-theatre/index.html">01 · 纸片剧场 v1</a><br>
-<span class="meta">10 张卡片 + 1 个可进入房间，最早的表现试验。pck 16.4 MB</span></li>
+<header>
+  <p class="eyebrow">world-agent · case 001</p>
+  <h1>陋居 · Godot Web 版本索引</h1>
+  <p class="lede">
+    以小说而非电影布景为准的德文郡歪斜多层红顶房屋。八个版本共享同一份引擎二进制，
+    各自只加载自己的数据包。Godot 4.7.1 Web 导出，单线程 <code>gl_compatibility</code>。
+  </p>
+  <div class="keys">
+    <span><b>WASD</b>移动</span>
+    <span><b>鼠标</b>观察</span>
+    <span><b>Space</b>跳跃</span>
+    <span><b>E</b>开门</span>
+    <span><b>Esc</b>释放鼠标</span>
+    <span>首次点击画面才捕获鼠标</span>
+  </div>
+</header>
 
-<li><a href="02-true3d-retro/index.html">02 · 完整室内 · clean_retro_3d</a><br>
-<span class="meta">1,057 mesh Blender GLB，12 房间、119 碰撞体，默认复古材质。pck 58.6 MB</span></li>
+<h2>表现版本<span class="n">真实几何与美术方向</span></h2>
+<p class="sec-note">这三个带 authored mesh 或卡片美术，是判断视觉效果的依据。</p>
+<ul class="grid">
 
-<li><a href="03-true3d-heroic/index.html">03 · 完整室内 · hero_shooter_light</a><br>
-<span class="meta">与 02 同一 pck，启动参数切到 case style.json 指定的英雄光照风格。pck 58.6 MB</span></li>
+  <li><a class="card" href="01-paper-theatre/index.html">
+    <img class="shot" src="thumbs/01-paper-theatre.jpg" alt="纸片剧场：分层卡片构成的多层房屋，前景有母鸡与坩埚" loading="lazy">
+    <div class="body">
+      <div><span class="idx">01</span><span class="name">纸片剧场 v1</span></div>
+      <p class="desc">10 张分层卡片 + 1 个可进入房间，最早的表现试验。</p>
+      <div class="tags"><span class="tag">pck 16.4 MB</span><span class="tag">10 cards</span></div>
+    </div>
+  </a></li>
+
+  <li><a class="card" href="02-true3d-retro/index.html">
+    <img class="shot" src="thumbs/02-true3d-retro.jpg" alt="完整室内复古风格：米黄外墙、蓝灰窗框、石径与花园" loading="lazy">
+    <div class="body">
+      <div><span class="idx">02</span><span class="name">完整室内 · clean_retro_3d</span></div>
+      <p class="desc">1,057 mesh Blender GLB，12 房间、119 碰撞体，默认复古材质。</p>
+      <div class="tags"><span class="tag hot">可上楼</span><span class="tag">pck 58.6 MB</span><span class="tag">12 rooms</span></div>
+    </div>
+  </a></li>
+
+  <li><a class="card" href="03-true3d-heroic/index.html">
+    <img class="shot" src="thumbs/03-true3d-heroic.jpg" alt="完整室内英雄光照风格：材质更平滑、光照更亮" loading="lazy">
+    <div class="body">
+      <div><span class="idx">03</span><span class="name">完整室内 · hero_shooter_light</span></div>
+      <p class="desc">与 02 同一份 pck，启动参数切到 case style.json 指定的英雄光照风格。</p>
+      <div class="tags"><span class="tag hot">可上楼</span><span class="tag">pck 58.6 MB</span><span class="tag">8 upper rooms</span></div>
+    </div>
+  </a></li>
+
 </ul>
 
-<h2>世界数据快照（语义代理渲染，读 world.json）</h2>
-<ul>
-<li><a href="04-world-proxy-r6/index.html">04 · revision 6（当前状态）</a><br>
-<span class="meta">77 实体，style.burrow_crooked_domestic_magic_v1</span></li>
+<h2>世界数据快照<span class="n">语义代理渲染，读 world.json</span></h2>
+<p class="sec-note">
+  同一份代理渲染脚本读取不同 world.json 快照，只有原始盒体和颜色，没有 authored mesh。
+  这五个版本的室内内容全部位于一楼，楼梯实体数为 0，楼上只有阁楼与烟囱等外部体量，进不去。
+</p>
+<ul class="grid">
 
-<li><a href="05-snapshot-r0001/index.html">05 · 快照 r0001 exterior v2</a><br>
-<span class="meta">burrow_grounds 首次出现，50 实体，storybook diorama 风格</span></li>
+  <li><a class="card" href="04-world-proxy-r6/index.html">
+    <img class="shot" src="thumbs/04-world-proxy-r6.jpg" alt="revision 6 代理渲染：盒体房屋与花园" loading="lazy">
+    <div class="body">
+      <div><span class="idx">04</span><span class="name">revision 6（当前状态）</span></div>
+      <p class="desc">77 实体，<span class="id">style.burrow_crooked_domestic_magic_v1</span></p>
+      <div class="tags"><span class="tag">77 实体</span><span class="tag">最新</span></div>
+    </div>
+  </a></li>
 
-<li><a href="06-snapshot-r0002/index.html">06 · 快照 r0002 light style v3</a><br>
-<span class="meta">66 实体，仍为 storybook diorama 风格</span></li>
+  <li><a class="card" href="05-snapshot-r0001/index.html">
+    <img class="shot" src="thumbs/05-snapshot-r0001.jpg" alt="快照 r0001：纯外观盒体，无室内实体" loading="lazy">
+    <div class="body">
+      <div><span class="idx">05</span><span class="name">快照 r0001 exterior v2</span></div>
+      <p class="desc">burrow_grounds 首次出现，storybook diorama 风格。室内实体数为 0，纯外观。</p>
+      <div class="tags"><span class="tag">50 实体</span><span class="tag">仅外观</span></div>
+    </div>
+  </a></li>
 
-<li><a href="07-snapshot-r0003/index.html">07 · 快照 r0003 book interior v1</a><br>
-<span class="meta">66 实体，切到 light_hero_shooter_architecture 风格</span></li>
+  <li><a class="card" href="06-snapshot-r0002/index.html">
+    <img class="shot" src="thumbs/06-snapshot-r0002.jpg" alt="快照 r0002：新增棚屋与杂草丛" loading="lazy">
+    <div class="body">
+      <div><span class="idx">06</span><span class="name">快照 r0002 light style v3</span></div>
+      <p class="desc">补上木构支撑、杂草丛与鸡舍，仍为 storybook diorama 风格。</p>
+      <div class="tags"><span class="tag">66 实体</span></div>
+    </div>
+  </a></li>
 
-<li><a href="08-snapshot-r0004/index.html">08 · 快照 r0004 ground floor v2</a><br>
-<span class="meta">72 实体，checkpoint 链末端；r5 / r6 无 checkpoint，无法回滚到</span></li>
+  <li><a class="card" href="07-snapshot-r0003/index.html">
+    <img class="shot" src="thumbs/07-snapshot-r0003.jpg" alt="快照 r0003：外景与 r0002 一致" loading="lazy">
+    <div class="body">
+      <div><span class="idx">07</span><span class="name">快照 r0003 book interior v1</span></div>
+      <p class="desc">风格切到 light_hero_shooter_architecture，首次引入厨房室内锚点。</p>
+      <div class="tags"><span class="tag">66 实体</span><span class="tag">室内起点</span></div>
+    </div>
+  </a></li>
+
+  <li><a class="card" href="08-snapshot-r0004/index.html">
+    <img class="shot" src="thumbs/08-snapshot-r0004.jpg" alt="快照 r0004：外景与 r0003 相同，差异都在室内" loading="lazy">
+    <div class="body">
+      <div><span class="idx">08</span><span class="name">快照 r0004 ground floor v2</span></div>
+      <p class="desc">
+        比 07 多 6 件一楼厨房陈设（八椅长桌、珐琅水槽、壁炉镜、魔法无线电等）。
+        外景视角与 07 完全相同，差异都在屋内。
+      </p>
+      <div class="tags"><span class="tag">72 实体</span><span class="tag">checkpoint 末端</span></div>
+    </div>
+  </a></li>
+
 </ul>
 
-<p class="meta">04-08 是同一份代理渲染脚本读取不同 world.json 快照，只有原始盒体和颜色，没有 Blender authored mesh。要看真实几何请用 02 / 03。</p>
 <h2>其他 case</h2>
-<ul>
-<li><a href="zougenji/index.html">增愿寺 · 垂直切片（2 个版本）</a><br>
-<span class="meta">《消失的13级台阶》山间寺庙，绳索路线与十三阶木梯两版</span></li>
+<ul class="grid">
+  <li><a class="card" href="zougenji/index.html">
+    <img class="shot" src="thumbs/zougenji.jpg" alt="增愿寺十三阶木梯，两侧扶手通向二层" loading="lazy">
+    <div class="body">
+      <div><span class="name">增愿寺 · 垂直切片</span></div>
+      <p class="desc">《消失的13级台阶》山间破败寺庙。绳索翻窗与十三阶木梯两个版本。</p>
+      <div class="tags"><span class="tag hot">2 个版本</span><span class="tag">case 002</span></div>
+    </div>
+  </a></li>
 </ul>
 
+<footer>
+  <p>
+    快照序列止于 r0004：r5 与 r6 在 V0 原型期绕过 World Patch 直接同步修改，没有 checkpoint，无法回滚。
+  </p>
+  <p>
+    缩略图取自各版本出生点的实际渲染画面。02 与 03 是唯一开发了非一楼空间的版本
+    （12 房间中 8 个在楼上，20 个楼梯碰撞体，最高房间 17.10 m）。
+  </p>
+  <p>源码与构建脚本在 <a href="https://github.com/wenh09/burrow-web-builds">wenh09/burrow-web-builds</a>。</p>
+</footer>
+
+</div>
 </body>
 </html>
