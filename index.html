@@ -148,7 +148,7 @@
   </p>
   <div class="models">
     <div class="model"><i class="i-sol"></i><b>GPT 5.6 Sol</b>
-      <span>较早的一版，用来看一句话能直接得到什么</span></div>
+      <span>较早的一版，从一句话直出试到约束管线</span></div>
     <div class="model"><i class="i-astra"></i><b>GPT 6 Astra</b>
       <span>同样一句话，不给约束也不中途干预</span></div>
     <div class="model"><i class="i-own"></i><b>自建 Agent（GLM 5.3 + hy4）</b>
@@ -167,7 +167,7 @@
     </p>
     <p class="source">《哈利·波特与密室》· 韦斯莱家</p>
   </div>
-  <p class="versus">四条路线：Sol 一句话直出 → 转二维取巧 → 自建管线约束工作流 → Astra 一句话直出</p>
+  <p class="versus">Sol 三次尝试：一句话直出 → 转二维取巧 → 约束管线加 Blender；最后是 Astra 一句话直出</p>
   <ul class="grid">
 
     <li><a class="card" href="burrow/01-world-proxy/index.html">
@@ -210,13 +210,13 @@
 
     <li><a class="card" href="burrow/03-authored-retro/index.html">
       <img class="shot" src="thumbs/burrow-retro.jpg" alt="米黄外墙、蓝灰窗框、石径与花园的完整室内版本" loading="lazy">
-      <span class="badge own">自建 Agent</span>
+      <span class="badge sol">GPT 5.6 Sol</span>
       <div class="body">
         <span class="name">约束管线 + Blender</span>
-        <p class="input">输入：<b>拆好的工作流</b> · 分阶段产出 + Blender 建模</p>
+        <p class="input">输入：<b>约束好的 pipeline</b> · 分阶段产出 + Blender 建模</p>
         <p class="desc">
-          把任务拆成布局、房间、碰撞几步，每步都给约束。
-          第一次真的能走进屋里上楼，12 个房间里 8 个在二层以上，楼梯连得通。
+          同一个模型，这次不再让它一把出图，改成约束 pipeline 和工作流，
+          再接 Blender 建模。第一次真的能走进屋里上楼，12 个房间里 8 个在二层以上。
         </p>
         <dl class="stats">
           <div class="stat"><dt>独立构件</dt><dd>973</dd></div>
