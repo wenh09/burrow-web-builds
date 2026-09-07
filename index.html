@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>3D World 对比 · 小说场景的不同生产路线</title>
+<title>3D World · 三个模型做同一个小说场景</title>
 <style>
   :root {
     --bg: #14110f;
@@ -14,8 +14,9 @@
     --ink-dim: #a49a8d;
     --ink-faint: #7d7367;
     --accent: #d98f4a;
+    --sol: #c98b6b;
     --astra: #7fa3c4;
-    --pipe: #8fa87b;
+    --own: #8fa87b;
   }
   * { box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
@@ -24,46 +25,57 @@
     font: 15px/1.75 -apple-system, BlinkMacSystemFont, "PingFang SC",
           "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
   }
-  .wrap { max-width: 1120px; margin: 0 auto; padding: 56px 24px 72px; }
+  .wrap { max-width: 1160px; margin: 0 auto; padding: 56px 24px 72px; }
 
-  header { border-bottom: 1px solid var(--line); padding-bottom: 26px; margin-bottom: 14px; }
+  header { border-bottom: 1px solid var(--line); padding-bottom: 28px; }
   .eyebrow {
     font-size: 12px; letter-spacing: .18em; text-transform: uppercase;
     color: var(--accent); margin: 0 0 10px;
   }
-  h1 { font-size: 30px; line-height: 1.25; margin: 0 0 14px; font-weight: 650; }
-  .lede { color: var(--ink-dim); margin: 0; max-width: 66ch; }
-  .lede code {
-    background: var(--panel-hi); color: var(--ink);
-    padding: 1px 6px; border-radius: 3px; font-size: 13px;
-  }
+  h1 { font-size: 30px; line-height: 1.3; margin: 0 0 16px; font-weight: 650; }
+  .lede { color: var(--ink-dim); margin: 0 0 14px; max-width: 64ch; }
 
-  .legend {
-    display: flex; flex-wrap: wrap; gap: 10px 22px;
-    margin: 20px 0 0; font-size: 13px; color: var(--ink-dim);
+  .models { display: grid; gap: 10px; margin: 20px 0 0; max-width: 68ch; }
+  .model {
+    display: grid; grid-template-columns: 12px auto 1fr; gap: 10px;
+    align-items: baseline; font-size: 13.5px;
   }
-  .legend span { display: flex; align-items: center; gap: 7px; }
-  .dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
-  .dot.pipe { background: var(--pipe); }
-  .dot.astra { background: var(--astra); }
+  .model i { width: 9px; height: 9px; border-radius: 50%; margin-top: 7px; }
+  .model b { color: var(--ink); font-weight: 600; white-space: nowrap; }
+  .model span { color: var(--ink-faint); }
+  .i-sol { background: var(--sol); }
+  .i-astra { background: var(--astra); }
+  .i-own { background: var(--own); }
 
-  .scene { margin-top: 46px; }
-  .scene-head {
-    display: flex; align-items: baseline; gap: 12px;
-    flex-wrap: wrap; margin-bottom: 4px;
+  .scene { margin-top: 52px; }
+  .scene-head { margin-bottom: 6px; }
+  .scene-head h2 { font-size: 20px; font-weight: 650; margin: 0 0 6px; }
+  .quote {
+    color: var(--ink-dim); font-size: 14px; line-height: 1.7;
+    margin: 0 0 4px; max-width: 62ch; font-style: normal;
   }
-  .scene-head h2 { font-size: 19px; font-weight: 650; margin: 0; }
-  .origin { color: var(--ink-faint); font-size: 13px; }
-  .scene-note { color: var(--ink-faint); font-size: 13px; margin: 0 0 20px; max-width: 70ch; }
+  .source { color: var(--ink-faint); font-size: 12.5px; }
+  .versus {
+    color: var(--ink-faint); font-size: 13px;
+    margin: 10px 0 20px; padding-left: 11px;
+    border-left: 2px solid var(--line);
+  }
 
   .grid {
     display: grid; gap: 18px; margin: 0; padding: 0; list-style: none;
-    grid-template-columns: repeat(auto-fill, minmax(258px, 1fr));
+    /* Fixed 4-column track so a 2-card or 1-card scene keeps the same card
+       width as the 4-card scene - otherwise auto-fit stretches them and the
+       versions stop being visually comparable. */
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    align-items: stretch;
   }
+  .grid > li { display: flex; }
+  @media (max-width: 1080px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 840px)  { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   .card {
-    display: block; text-decoration: none; color: inherit; position: relative;
-    background: var(--panel); border: 1px solid var(--line);
-    border-radius: 10px; overflow: hidden;
+    display: flex; flex-direction: column; text-decoration: none; color: inherit;
+    position: relative; background: var(--panel); border: 1px solid var(--line);
+    border-radius: 10px; overflow: hidden; width: 100%;
     transition: border-color .16s, transform .16s;
   }
   .card:hover { border-color: var(--accent); transform: translateY(-2px); }
@@ -73,47 +85,54 @@
     object-fit: cover; background: var(--panel-hi);
     border-bottom: 1px solid var(--line);
   }
-  .route {
+  .badge {
     position: absolute; top: 10px; left: 10px;
-    font-size: 11px; font-weight: 600; letter-spacing: .03em;
+    font-size: 11px; font-weight: 600; letter-spacing: .02em;
     padding: 2px 8px; border-radius: 4px;
-    background: rgba(20,17,15,.82); backdrop-filter: blur(3px);
+    background: rgba(20,17,15,.85); backdrop-filter: blur(3px);
   }
-  .route.pipe { color: var(--pipe); border: 1px solid #3d4636; }
-  .route.astra { color: var(--astra); border: 1px solid #34465a; }
-  .body { padding: 13px 15px 15px; }
-  .step { color: var(--ink-faint); font-size: 12px; letter-spacing: .04em; }
-  .name { font-weight: 600; font-size: 14px; display: block; margin-top: 2px; }
-  .desc { color: var(--ink-dim); font-size: 13px; line-height: 1.6; margin: 8px 0 0; }
-  .tags { margin: 10px 0 0; display: flex; flex-wrap: wrap; gap: 6px; }
-  .tag {
-    font-size: 11px; color: var(--ink-faint);
-    border: 1px solid var(--line); border-radius: 4px; padding: 1px 7px;
-  }
+  .badge.sol { color: var(--sol); border: 1px solid #4d372c; }
+  .badge.astra { color: var(--astra); border: 1px solid #34465a; }
+  .badge.own { color: var(--own); border: 1px solid #3d4636; }
 
-  .keys {
-    margin: 22px 0 0; padding: 13px 16px;
-    background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
-    font-size: 13px; color: var(--ink-dim);
+  .body { padding: 14px 15px 15px; display: flex; flex-direction: column; flex: 1; }
+  .name { font-weight: 600; font-size: 14.5px; }
+  .input {
+    color: var(--ink-faint); font-size: 12px; margin: 5px 0 0;
+    padding-bottom: 9px; border-bottom: 1px dashed var(--line);
+    /* Reserve two lines so the description and the stat block below start at
+       the same y across every card in a row. */
+    min-height: 2.9em;
   }
-  .keys b {
-    color: var(--ink); font-weight: 600; background: var(--panel-hi);
-    border: 1px solid var(--line); border-radius: 4px;
-    padding: 1px 7px; margin-right: 5px; font-size: 12px;
+  .input b { color: var(--ink-dim); font-weight: 600; }
+  .desc { color: var(--ink-dim); font-size: 13px; line-height: 1.65; margin: 9px 0 0; flex: 1; }
+
+  .stats {
+    margin: 12px 0 0; padding-top: 10px; border-top: 1px solid var(--line);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 3px 10px;
   }
+  .stat { display: flex; flex-direction: column; }
+  .stat dt { color: var(--ink-faint); font-size: 10.5px; letter-spacing: .04em; }
+  .stat dd {
+    margin: 0; color: var(--ink); font-size: 13px; font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat dd small { color: var(--ink-faint); font-weight: 400; font-size: 11px; }
 
   footer {
-    margin-top: 54px; padding-top: 22px; border-top: 1px solid var(--line);
+    margin-top: 56px; padding-top: 22px; border-top: 1px solid var(--line);
     color: var(--ink-faint); font-size: 13px;
   }
-  footer p { margin: 0 0 9px; max-width: 74ch; }
-  footer a { color: var(--pipe); }
+  footer p { margin: 0 0 9px; max-width: 76ch; }
+  footer a { color: var(--own); }
   footer code { background: var(--panel-hi); padding: 1px 5px; border-radius: 3px; }
 
   @media (max-width: 560px) {
     .wrap { padding: 36px 16px 52px; }
     h1 { font-size: 24px; }
     .grid { grid-template-columns: 1fr; gap: 14px; }
+    .model { grid-template-columns: 12px 1fr; }
+    .model span { grid-column: 2; }
   }
 </style>
 </head>
@@ -121,69 +140,109 @@
 <div class="wrap">
 
 <header>
-  <p class="eyebrow">3D World · 生产路线对比</p>
-  <h1>同一个小说场景，不同的做法能做到什么程度</h1>
+  <p class="eyebrow">3D World</p>
+  <h1>三个模型，做同一个小说里的场景</h1>
   <p class="lede">
-    三个来自小说的场景，每个都用不止一条路线做过一遍。放在一起是为了看清差别：
-    世界数据代理渲染、纸片美术、Blender authored mesh、Agent 管线，
-    以及单 Agent 零干预直接产出。全部为 Godot 4.7.1 Web 导出，
-    单线程 <code>gl_compatibility</code>，浏览器里直接进。
+    给定一本小说里的一处地方，让模型把它变成能走进去的三维空间。
+    同一个场景交给不同的模型和不同的做法各做一遍，放在一起看差距。
   </p>
-  <div class="legend">
-    <span><i class="dot pipe"></i>管线产出：world.json、Agent 编排或人工 authored 资产</span>
-    <span><i class="dot astra"></i>Astra：单 Agent 直接产出，0 干预 0 约束</span>
+  <div class="models">
+    <div class="model"><i class="i-sol"></i><b>GPT 5.6 Sol</b>
+      <span>较早的一版，用来看一句话能直接得到什么</span></div>
+    <div class="model"><i class="i-astra"></i><b>GPT 6 Astra</b>
+      <span>同样一句话，不给约束也不中途干预</span></div>
+    <div class="model"><i class="i-own"></i><b>自建 Agent（GLM 5.3 + hy4）</b>
+      <span>自己搭的管线，把任务拆成阶段逐步产出</span></div>
   </div>
 </header>
 
 <section class="scene">
   <div class="scene-head">
     <h2>陋居</h2>
-    <span class="origin">《哈利·波特》· 德文郡歪斜多层红顶房屋</span>
+    <p class="quote">
+      那是一座歪歪扭扭的石头房子，看着像原本只有一间小猪圈，
+      后来东一间西一间地往上加，直到加成好几层高，歪斜得只能靠魔法才立得住。
+      屋顶上插着四五根烟囱，院门口的木牌写着「陋居」，
+      门边一堆积着雨靴和锈得厉害的坩埚。
+    </p>
+    <p class="source">《哈利·波特与密室》· 韦斯莱家</p>
   </div>
-  <p class="scene-note">四条路线，按投入从低到高排列。前三条是 world-agent 管线的不同阶段，最后一条是 Astra 独立重做。</p>
+  <p class="versus">四条路线：Sol 一句话直出 → 转二维取巧 → 自建管线约束工作流 → Astra 一句话直出</p>
   <ul class="grid">
 
     <li><a class="card" href="burrow/01-world-proxy/index.html">
-      <img class="shot" src="thumbs/burrow-proxy.jpg" alt="世界数据代理渲染：盒体房屋与花园" loading="lazy">
-      <span class="route pipe">管线</span>
+      <img class="shot" src="thumbs/burrow-proxy.jpg" alt="盒体房屋与花园，只有原始几何和颜色" loading="lazy">
+      <span class="badge sol">GPT 5.6 Sol</span>
       <div class="body">
-        <span class="step">路线 1 · 世界数据</span>
-        <span class="name">version 6 实体版本</span>
-        <p class="desc">直接读 world.json 渲染，77 个实体只有原始盒体和颜色。看得出体量关系，没有任何 authored 几何。</p>
-        <div class="tags"><span class="tag">77 实体</span><span class="tag">proxy render</span></div>
+        <span class="name">初版 · 一句话直出</span>
+        <p class="input">输入：<b>一句话 Query</b> · 无参考图 · 无人工建模</p>
+        <p class="desc">
+          Text to 3D 直接产出。房子的层数、烟囱、院子都在正确的位置上，
+          但每个物件都还是一个盒子，看得出布局，看不出这是石头房。
+        </p>
+        <dl class="stats">
+          <div class="stat"><dt>独立构件</dt><dd>77 <small>图元</small></dd></div>
+          <div class="stat"><dt>素材体积</dt><dd>0.13 MB</dd></div>
+          <div class="stat"><dt>贴图</dt><dd>0</dd></div>
+          <div class="stat"><dt>可走空间</dt><dd>仅室外</dd></div>
+        </dl>
       </div>
     </a></li>
 
     <li><a class="card" href="burrow/02-paper-theatre/index.html">
-      <img class="shot" src="thumbs/burrow-paper.jpg" alt="纸片剧场：分层卡片房屋，前景母鸡与坩埚" loading="lazy">
-      <span class="route pipe">管线</span>
+      <img class="shot" src="thumbs/burrow-paper.jpg" alt="分层卡片构成的多层房屋，母鸡与坩埚" loading="lazy">
+      <span class="badge sol">GPT 5.6 Sol</span>
       <div class="body">
-        <span class="step">路线 2 · 卡片美术</span>
-        <span class="name">纸片剧场 v1</span>
-        <p class="desc">10 张分层卡片加 1 个可进入房间。用二维美术绕过建模，画面完成度高但只有一个视角成立。</p>
-        <div class="tags"><span class="tag">10 cards</span><span class="tag">pck 16.4 MB</span></div>
+        <span class="name">转二维的尝试</span>
+        <p class="input">输入：<b>一句话 Query</b> · 生成 2D 图后切层</p>
+        <p class="desc">
+          既然建模不行，就先画二维图再切成一层层卡片立起来。
+          画面一下就对了，连母鸡和坩埚都有，代价是只有正面这一个角度成立。
+        </p>
+        <dl class="stats">
+          <div class="stat"><dt>独立构件</dt><dd>10 <small>卡片</small></dd></div>
+          <div class="stat"><dt>素材体积</dt><dd>16.4 MB</dd></div>
+          <div class="stat"><dt>贴图</dt><dd>5</dd></div>
+          <div class="stat"><dt>可走空间</dt><dd>1 间</dd></div>
+        </dl>
       </div>
     </a></li>
 
     <li><a class="card" href="burrow/03-authored-retro/index.html">
-      <img class="shot" src="thumbs/burrow-retro.jpg" alt="完整室内：米黄外墙、蓝灰窗框、石径" loading="lazy">
-      <span class="route pipe">管线</span>
+      <img class="shot" src="thumbs/burrow-retro.jpg" alt="米黄外墙、蓝灰窗框、石径与花园的完整室内版本" loading="lazy">
+      <span class="badge own">自建 Agent</span>
       <div class="body">
-        <span class="step">路线 3 · authored mesh</span>
-        <span class="name">完整室内 · clean_retro_3d</span>
-        <p class="desc">1,057 mesh 的 Blender GLB，12 个房间、119 碰撞体，其中 8 个房间在楼上，有连续楼梯可以真的走上去。</p>
-        <div class="tags"><span class="tag">12 rooms</span><span class="tag">可上楼</span><span class="tag">pck 58.6 MB</span></div>
+        <span class="name">约束管线 + Blender</span>
+        <p class="input">输入：<b>拆好的工作流</b> · 分阶段产出 + Blender 建模</p>
+        <p class="desc">
+          把任务拆成布局、房间、碰撞几步，每步都给约束。
+          第一次真的能走进屋里上楼，12 个房间里 8 个在二层以上，楼梯连得通。
+        </p>
+        <dl class="stats">
+          <div class="stat"><dt>独立构件</dt><dd>973</dd></div>
+          <div class="stat"><dt>素材体积</dt><dd>62.1 MB</dd></div>
+          <div class="stat"><dt>贴图</dt><dd>28</dd></div>
+          <div class="stat"><dt>可走空间</dt><dd>12 间 <small>含 8 楼上</small></dd></div>
+        </dl>
       </div>
     </a></li>
 
     <li><a class="card" href="burrow/04-astra/index.html">
-      <img class="shot" src="thumbs/burrow-astra.jpg" alt="Astra 版陋居：五层主屋、池塘、果园、石径" loading="lazy">
-      <span class="route astra">Astra</span>
+      <img class="shot" src="thumbs/burrow-astra.jpg" alt="五层主屋、池塘、果园与石径" loading="lazy">
+      <span class="badge astra">GPT 6 Astra</span>
       <div class="body">
-        <span class="step">路线 4 · 单 Agent</span>
-        <span class="name">Astra · Hearth</span>
-        <p class="desc">五层主屋、悬挑小书房、八个上层房间、连续折返楼梯，院落含鸡舍、菜园、果园、池塘。约 54.6 万三角面，65 组碰撞网格直接用可见网格的三角面。</p>
-        <div class="tags"><span class="tag">546k tris</span><span class="tag">65 碰撞组</span><span class="tag">全景 + 第一人称</span></div>
+        <span class="name">Astra · 一句话直出</span>
+        <p class="input">输入：<b>一句话 Query</b> · 0 干预 0 约束</p>
+        <p class="desc">
+          和第一张同样是一句话，这次直接给出五层主屋、悬挑书房、八个上层房间和连续折返楼梯，
+          院子里有鸡舍、菜园、果园和池塘。
+        </p>
+        <dl class="stats">
+          <div class="stat"><dt>独立构件</dt><dd>329</dd></div>
+          <div class="stat"><dt>素材体积</dt><dd>35.7 MB</dd></div>
+          <div class="stat"><dt>贴图</dt><dd>0 <small>纯材质</small></dd></div>
+          <div class="stat"><dt>可走空间</dt><dd>室内外全通</dd></div>
+        </dl>
       </div>
     </a></li>
 
@@ -193,30 +252,51 @@
 <section class="scene">
   <div class="scene-head">
     <h2>增愿寺</h2>
-    <span class="origin">《消失的13级台阶》· 山间破败寺庙，内供不动明王</span>
+    <p class="quote">
+      山里那座早已没人照看的寺庙，正殿里供着一尊高大的不动明王木像。
+      后山塌方过好几次，泥土一层压一层地埋上来，把整座殿身裹进了山体，
+      只在侧墙上留下一个还能钻进去的窗洞。通往二层的那道木梯，一共十三级。
+    </p>
+    <p class="source">《消失的13级台阶》</p>
   </div>
-  <p class="scene-note">两条路线做同一座寺庙，都要解决"十三阶台阶"这个书里的硬设定。</p>
+  <p class="versus">两条路线：自建 Agent 管线 vs Astra 一句话直出</p>
   <ul class="grid">
 
     <li><a class="card" href="zougenji/01-agent-pipeline/index.html">
-      <img class="shot" src="thumbs/zougenji-agent.jpg" alt="Agent 管线版增愿寺：十三阶木梯与两侧扶手" loading="lazy">
-      <span class="route pipe">管线</span>
+      <img class="shot" src="thumbs/zougenji-agent.jpg" alt="十三阶木梯与两侧扶手" loading="lazy">
+      <span class="badge own">自建 Agent</span>
       <div class="body">
-        <span class="step">路线 1 · Agent 管线</span>
-        <span class="name">垂直切片 r004</span>
-        <p class="desc">Dream Agent 产出的垂直切片。十三阶木梯通向二层，梯上端设落脚平台，二层楼板围绕梯口拆块以免阻挡。8 个碰撞体。</p>
-        <div class="tags"><span class="tag">world rev 4</span><span class="tag">pck 0.45 MB</span></div>
+        <span class="name">管线 · 垂直切片</span>
+        <p class="input">输入：<b>原著事实 + 14 张概念图</b> · 分阶段产出</p>
+        <p class="desc">
+          管线按空间合同一步步推进，做出了那道十三级木梯和它通向的二层。
+          楼梯、扶手、落脚平台都对，寺庙其余部分还没有铺开。
+        </p>
+        <dl class="stats">
+          <div class="stat"><dt>独立构件</dt><dd>78</dd></div>
+          <div class="stat"><dt>素材体积</dt><dd>0.76 MB</dd></div>
+          <div class="stat"><dt>贴图</dt><dd>0</dd></div>
+          <div class="stat"><dt>可走空间</dt><dd>2 层 <small>局部</small></dd></div>
+        </dl>
       </div>
     </a></li>
 
     <li><a class="card" href="zougenji/02-astra/index.html">
-      <img class="shot" src="thumbs/zougenji-astra.jpg" alt="Astra 版增愿寺：大殿、木梯、不动明王与二层栏杆" loading="lazy">
-      <span class="route astra">Astra</span>
+      <img class="shot" src="thumbs/zougenji-astra.jpg" alt="大殿、木梯、不动明王与二层栏杆" loading="lazy">
+      <span class="badge astra">GPT 6 Astra</span>
       <div class="body">
-        <span class="step">路线 2 · 单 Agent</span>
         <span class="name">Astra · 地层之下</span>
-        <p class="desc">整寺被连续滑坡的泥土包覆。外围林地、滑坡面、调查平台栈道、绳索下降井、侧墙窗洞、两层木构大殿、不动明王雕塑。Tab 可切全寺剖视。</p>
-        <div class="tags"><span class="tag">剖视模式</span><span class="tag">绳索升降</span><span class="tag">pck 20.9 MB</span></div>
+        <p class="input">输入：<b>原著事实摘要 + 概念图</b> · 0 干预</p>
+        <p class="desc">
+          整座寺连着山体一起做完：外围林地、塌方面、调查栈道、绳索下降井、侧墙窗洞、
+          两层木构大殿和那尊不动明王。按 Tab 能把山体剖开看剖面。
+        </p>
+        <dl class="stats">
+          <div class="stat"><dt>独立构件</dt><dd>3,251</dd></div>
+          <div class="stat"><dt>素材体积</dt><dd>23.9 MB</dd></div>
+          <div class="stat"><dt>贴图</dt><dd>0 <small>纯材质</small></dd></div>
+          <div class="stat"><dt>可走空间</dt><dd>山道到二层</dd></div>
+        </dl>
       </div>
     </a></li>
 
@@ -226,39 +306,52 @@
 <section class="scene">
   <div class="scene-head">
     <h2>汤屋</h2>
-    <span class="origin">《千与千寻》· 神隐街道与汤屋</span>
+    <p class="quote">
+      天一擦黑，街上那些空着的食铺就一家家亮起灯来，
+      蒸腾的热气和饭菜的香味涌到石板路上。
+      过了那座红桥，就是那幢层层叠叠、灯火通明的大屋子。
+    </p>
+    <p class="source">《千与千寻》· 油屋与神隐街道</p>
   </div>
-  <p class="scene-note">只有 Astra 一条路线，管线没做过这个场景。</p>
+  <p class="versus">只有 Astra 一条路线，另外两条没有做过这个场景</p>
   <ul class="grid">
 
     <li><a class="card" href="yuya/01-astra/index.html">
-      <img class="shot" src="thumbs/yuya-astra.jpg" alt="神隐街道夜景：两侧食铺灯笼与尽头的汤屋主楼" loading="lazy">
-      <span class="route astra">Astra</span>
+      <img class="shot" src="thumbs/yuya-astra.jpg" alt="神隐街道夜景，两侧灯笼与尽头的汤屋主楼" loading="lazy">
+      <span class="badge astra">GPT 6 Astra</span>
       <div class="body">
-        <span class="step">唯一路线 · 单 Agent</span>
         <span class="name">Astra · 入夜之前</span>
-        <p class="desc">食铺的灯刚亮起来的那个时刻。沿神隐街道走过红桥到汤屋门前，两侧摊铺、灯笼与招牌都可走近看。</p>
-        <div class="tags"><span class="tag">夜景</span><span class="tag">街道 + 汤屋</span></div>
+        <p class="input">输入：<b>一句话 Query + 概念图</b> · 0 干预</p>
+        <p class="desc">
+          取的是灯刚亮起来那一刻。沿街道走过红桥到汤屋门前，
+          两侧摊铺、灯笼和招牌都能走近看。
+        </p>
+        <dl class="stats">
+          <div class="stat"><dt>独立构件</dt><dd>129</dd></div>
+          <div class="stat"><dt>素材体积</dt><dd>11.8 MB</dd></div>
+          <div class="stat"><dt>贴图</dt><dd>0 <small>纯材质</small></dd></div>
+          <div class="stat"><dt>可走空间</dt><dd>街道到前厅</dd></div>
+        </dl>
       </div>
     </a></li>
 
   </ul>
 </section>
 
-<div class="keys">
-  <b>WASD</b>移动 &nbsp;<b>鼠标</b>环视 &nbsp;<b>Space</b>跳跃 &nbsp;<b>Shift</b>快步 &nbsp;<b>Esc</b>释放鼠标
-  &nbsp;— 各版本另有自己的键位，进去后看画面上的提示。首次点击画面才会捕获鼠标。
-</div>
-
 <footer>
   <p>
-    Astra 版本是单 Agent 在 0 干预 0 约束下直接产出的独立工程，没有复用管线的资产或代码。
-    管线版本来自 world-agent 的世界数据与 Agent 编排链路。
+    七个版本都是 Godot 4.7.1 的网页导出，点开就能用 WASD 走动、鼠标环视，各版本另有自己的按键提示。
+    首次点击画面才会捕获鼠标。
   </p>
   <p>
-    缩略图全部取自各版本在浏览器里的实际渲染画面，不是概念图或宣传图。
-    增愿寺 Astra 原工程用 <code>forward_plus</code>，Web 只支持 <code>gl_compatibility</code>，
-    发布副本切换了渲染后端并补入中文字体子集，原工程未改动。
+    缩略图全部截自各版本在浏览器里的实际画面。四项数据用同一方法从各自的模型文件与场景数据实测：
+    独立构件指模型里可分辨的网格或图元数量，素材体积为模型文件原始大小，
+    可走空间指角色实际能到达的范围。
+  </p>
+  <p>
+    第一张的 77 个物件是该版本打包时的世界数据，此后数据仍在变化，页面按实际加载的内容标注。
+    增愿寺 Astra 原工程用 <code>forward_plus</code>，网页只支持 <code>gl_compatibility</code>，
+    发布副本换了渲染后端并补入中文字体，原工程未改。
   </p>
   <p>源码与构建脚本在 <a href="https://github.com/wenh09/burrow-web-builds">wenh09/burrow-web-builds</a>。</p>
 </footer>
