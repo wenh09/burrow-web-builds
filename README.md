@@ -1,8 +1,14 @@
 # 陋居 Web 构建
 
-把陋居的每个版本导出成独立的本地 Godot Web 页面，用于并排对比不同表现方案和不同世界快照。
+把陋居的每个版本导出成独立的 Godot Web 页面，用于并排对比不同表现方案和不同世界快照。
 
-## 打开方式
+## 公网地址
+
+<https://wenh09.github.io/burrow-web-builds/>
+
+仓库 `wenh09/burrow-web-builds`，GitHub Pages 从 `main` 分支根目录发布，任何人可直接访问。
+
+## 本地打开
 
 ```bash
 python3 tools/godot/serve_burrow_web_builds.py --port 8010
@@ -19,6 +25,15 @@ python3 tools/godot/build_burrow_web_builds.py --only 02-true3d-retro
 ```
 
 依赖 Godot 4.7.1 在 PATH 中，以及已安装的 4.7.1 Web 导出模板。
+
+## 重新发布到公网
+
+```bash
+python3 tools/godot/publish_burrow_pages.py    # 生成去重后的 artifacts/web-site/
+cd artifacts/web-site && git add -A && git commit -m "..." && git push
+```
+
+Pages 会在约 40 秒内自动重新构建。
 
 ## 版本清单
 
@@ -50,3 +65,11 @@ r5 和 r6 没有 checkpoint（V0 原型期绕过 World Patch 直接同步修改�
 八个版本均在 Chrome 中实际加载并截图确认出画面，非仅构建成功。02 / 03 的画面差异可见（材质、光照、地面色调），历史上出现过的"数值门禁通过但外墙缺失"未复现。
 
 `godot --headless` 的 smoke 只证明契约数值成立，不能替代浏览器里的画面确认。
+
+## 公网发布的额外处理
+
+**引擎二进制去重。** 八份构建各带一份完全相同的 37.7 MB `index.wasm` 和相同的 `index.js`，直接上传是 438 MB，其中约 300 MB 是纯重复。Godot 加载器从 `executable` 解析引擎路径（`${loadPath}.wasm` / `.js`），但数据包由 `mainPack` 独立指定，所以可以让所有版本共用一份 `engine/`、各自只带自己的 pck。发布目录因此降到 172 MB，最大单文件 58.7 MB——在 Pages 的 1 GB 站点上限与 100 MB 单文件上限之内（58.7 MB 会触发 GitHub 超过 50 MB 的建议值 warning，不影响推送）。
+
+`publish_burrow_pages.py` 在 hoist 之前会逐个比对 md5，任一文件在各构建间不一致就直接中止，不会盲目共享。
+
+**公网侧验证。** `engine/index.wasm` 返回 `content-type: application/wasm`，八个页面与其 pck 均为 200。Pages 上的实际渲染通过 canvas 像素读回确认：canvas 按 devicePixelRatio 放大到 1316×1622、加载层已移除、WebGL2 可用，中心区域采样到房屋墙面的米黄色 (234,220,197)。
