@@ -4,9 +4,16 @@
 
 ## 公网地址
 
-<https://wenh09.github.io/burrow-web-builds/>
+同一份内容发布在两个平台，任何人可直接访问：
 
-仓库 `wenh09/burrow-web-builds`，GitHub Pages 从 `main` 分支根目录发布，任何人可直接访问。
+- GitHub Pages：<https://wenh09.github.io/burrow-web-builds/>
+- itch.io：<https://wenh09.itch.io/burrow-web-builds>
+
+GitHub Pages 从仓库 `wenh09/burrow-web-builds` 的 `main` 分支根目录发布。itch.io 是同名项目，
+类型为 HTML、定价 Free、嵌入视口 1152×648。
+
+索引页的版本链接写成显式的 `<dir>/index.html`。itch 的 CDN 不提供目录索引，
+写成 `<dir>/` 会 404；GitHub Pages 两种都能解析，所以显式写法同时适配两边。
 
 ## 本地打开
 
@@ -30,10 +37,20 @@ python3 tools/godot/build_burrow_web_builds.py --only 02-true3d-retro
 
 ```bash
 python3 tools/godot/publish_burrow_pages.py    # 生成去重后的 artifacts/web-site/
+
+# GitHub Pages
 cd artifacts/web-site && git add -A && git commit -m "..." && git push
+
+# itch.io（butler 只上传变化的部分）
+export BUTLER_API_KEY=<你的 key>               # itch.io/user/settings/api-keys
+butler push artifacts/web-site wenh09/burrow-web-builds:html
 ```
 
-Pages 会在约 40 秒内自动重新构建。
+Pages 会在约 40 秒内自动重新构建。itch 侧推送后需等 build 处理完成，
+用 `butler status wenh09/burrow-web-builds:html` 查看。
+
+`tools/godot/package_burrow_itch.py` 可另外打出一份手动上传用的 zip
+（`artifacts/burrow-itch-io.zip`，144MB），在没有 butler 时用网页拖拽上传。
 
 ## 版本清单
 
@@ -73,3 +90,17 @@ r5 和 r6 没有 checkpoint（V0 原型期绕过 World Patch 直接同步修改�
 `publish_burrow_pages.py` 在 hoist 之前会逐个比对 md5，任一文件在各构建间不一致就直接中止，不会盲目共享。
 
 **公网侧验证。** `engine/index.wasm` 返回 `content-type: application/wasm`，八个页面与其 pck 均为 200。Pages 上的实际渲染通过 canvas 像素读回确认：canvas 按 devicePixelRatio 放大到 1316×1622、加载层已移除、WebGL2 可用，中心区域采样到房屋墙面的米黄色 (234,220,197)。
+
+**itch.io 侧的两个差异。** itch 把整份 zip 放在 `html-classic.itch.zone` 上用 iframe 承载，
+CDN 不提供目录索引，所以索引页链接必须写成 `<dir>/index.html`（第一次发布时写成 `<dir>/`，
+八个版本在 itch 上全部 404，Pages 上却正常）。itch 会自动配好 Godot Web 需要的跨源头，
+不需要像 Pages 那样依赖关掉线程支持。
+
+itch 侧同样验证到实际渲染：`03-true3d-heroic` 页面标题为 `hero_shooter_light`，
+canvas 2560×1920、加载层已移除，画面中部采样到木质棕 (104,71,48)、下部蓝灰 (44,61,75)，
+多次采样稳定。
+
+**itch 项目的必填项。** 项目类型必须设为 HTML 并配置嵌入尺寸，否则页面报
+"haven't configured how your project is embedded"。AI 内容披露为强制项，此处按实际情况
+勾选了 Graphics 与 Code。封面图为必填但尚未上传，需在项目编辑页手动上传
+（`/tmp/burrow-cover-final.png` 是从 02 版本实际画面导出的 1260×1000 图，可直接用）。
